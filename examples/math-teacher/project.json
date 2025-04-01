@@ -1,7 +1,7 @@
 {
-  "name": "agents",
+  "name": "math-teacher",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/agents/src",
+  "sourceRoot": "examples/math-teacher/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -9,28 +9,34 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": ["node-env=production"]
+        "args": [
+          "node-env=production"
+        ]
       },
       "configurations": {
         "development": {
-          "args": ["node-env=development"]
+          "args": [
+            "node-env=development"
+          ]
         }
       }
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
+      "dependsOn": [
+        "build"
+      ],
       "options": {
-        "buildTarget": "agents:build",
+        "buildTarget": "math-teacher:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "agents:build:development"
+          "buildTarget": "math-teacher:build:development"
         },
         "production": {
-          "buildTarget": "agents:build:production"
+          "buildTarget": "math-teacher:build:production"
         }
       }
     }

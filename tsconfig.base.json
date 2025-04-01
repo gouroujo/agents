@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@gouroujo/agents": ["libs/agents/src/index.ts"],
+      "@gouroujo/nest-agents": ["libs/nest-agents/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
