@@ -15,8 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gouroujo/agents": ["libs/agents/src/index.ts"],
-      "@gouroujo/nest-agents": ["libs/nest-agents/src/index.ts"]
+      "@agenticz/core": ["libs/core/src/index.ts"],
+      "@agenticz/nest-agenticz": ["libs/nest-agenticz/src/index.ts"],
+      "@agenticz/ollama": ["libs/ollama/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

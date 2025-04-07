@@ -1,7 +1,7 @@
 {
-  "name": "nest-agents",
+  "name": "ollama",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/nest-agents/src",
+  "sourceRoot": "libs/ollama/src",
   "projectType": "library",
   "release": {
     "version": {
@@ -18,11 +18,11 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/nest-agents",
-        "tsConfig": "libs/nest-agents/tsconfig.lib.json",
-        "packageJson": "libs/nest-agents/package.json",
-        "main": "libs/nest-agents/src/index.ts",
-        "assets": ["libs/nest-agents/*.md"]
+        "outputPath": "dist/libs/ollama",
+        "tsConfig": "libs/ollama/tsconfig.lib.json",
+        "packageJson": "libs/ollama/package.json",
+        "main": "libs/ollama/src/index.ts",
+        "assets": ["libs/ollama/*.md"]
       }
     },
     "nx-release-publish": {

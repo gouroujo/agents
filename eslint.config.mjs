@@ -1,6 +1,9 @@
 import nx from '@nx/eslint-plugin';
 
-export default [
+import { defineConfig } from 'eslint/config'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+
+export default defineConfig([
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
@@ -39,4 +42,6 @@ export default [
     // Override or add rules here
     rules: {},
   },
-];
+  // tseslint.configs.recommended,
+  eslintPluginPrettierRecommended,
+])

@@ -1,5 +1,5 @@
 {
-  "name": "@gouroujo/agents",
+  "name": "@agenticz/nest-agenticz",
   "version": "0.0.1",
   "type": "commonjs",
   "main": "./src/index.js",

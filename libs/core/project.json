@@ -1,7 +1,7 @@
 {
-  "name": "agents",
+  "name": "core",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/agents/src",
+  "sourceRoot": "libs/core/src",
   "projectType": "library",
   "release": {
     "version": {
@@ -16,13 +16,17 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
-        "outputPath": "dist/libs/agents",
-        "tsConfig": "libs/agents/tsconfig.lib.json",
-        "packageJson": "libs/agents/package.json",
-        "main": "libs/agents/src/index.ts",
-        "assets": ["libs/agents/*.md"]
+        "outputPath": "dist/libs/core",
+        "tsConfig": "libs/core/tsconfig.lib.json",
+        "packageJson": "libs/core/package.json",
+        "main": "libs/core/src/index.ts",
+        "assets": [
+          "libs/core/*.md"
+        ]
       }
     },
     "nx-release-publish": {
