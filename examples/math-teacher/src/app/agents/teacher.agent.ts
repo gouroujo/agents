@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { AIModel, AIAgent } from '@agenticz/core'
+import { Model, Agent } from '@agenticz/core'
 import { InjectModel, Tool } from '@agenticz/nest-agenticz'
 import { MathToolset } from '../toolsets/math.toolset'
 

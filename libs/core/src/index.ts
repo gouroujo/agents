@@ -1,2 +1,6 @@
-export * from './lib/agents';
+export * from './lib/agent'
 export * from './lib/model'
+export * from './lib/team'
+export * from './lib/messages'
+export * from './lib/thread'
+export * from './lib/interfaces'

@@ -1,5 +1,3 @@
-
-
-export type AIResponse = {
-    content: string
+export type Response = {
+  content: string
 }

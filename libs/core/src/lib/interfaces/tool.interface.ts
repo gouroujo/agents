@@ -8,7 +8,7 @@
  * Clients should never make tool use decisions based on ToolAnnotations
  * received from untrusted servers.
  */
-export interface AIToolAnnotations {
+export interface ToolAnnotations {
   /**
    * A human-readable title for the tool.
    */
@@ -52,7 +52,7 @@ export interface AIToolAnnotations {
   openWorldHint?: boolean
 }
 
-export interface AITool {
+export interface Tool {
   /**
    * The name of the tool.
    */
@@ -75,6 +75,6 @@ export interface AITool {
   /**
    * Optional additional tool information.
    */
-  annotations?: AIToolAnnotations
+  annotations?: ToolAnnotations
   function: () => string
 }
