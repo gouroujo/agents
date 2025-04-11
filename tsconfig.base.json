@@ -4,21 +4,30 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "target": "es2020",
+    "module": "node18",
+    "lib": [
+      "es2023"
+    ],
     "skipLibCheck": true,
+    "strict": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@agenticz/core": ["libs/core/src/index.ts"],
-      "@agenticz/nest-agenticz": ["libs/nest-agenticz/src/index.ts"],
-      "@agenticz/ollama": ["libs/ollama/src/index.ts"]
+      "@agenticz/core": [
+        "libs/core/src/index.ts"
+      ],
+      "@agenticz/ollama": [
+        "libs/ollama/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

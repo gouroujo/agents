@@ -1,1 +1,5 @@
-export * from './lib/ollama';
+import { Effect, Console } from 'effect'
+
+const program = Console.log('Hello, World!')
+
+Effect.runSync(program)
