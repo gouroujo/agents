@@ -2,21 +2,18 @@
   "name": "@agenticz/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "knip": "knip"
+  },
   "private": true,
   "dependencies": {
     "effect": "^3.14.8",
-    "ollama": "^0.5.14",
-    "rxjs": "^7",
-    "xmlbuilder2": "^3.1.1",
-    "zod": "^3.24.2"
+    "ollama": "^0.5.14"
   },
   "devDependencies": {
-    "@eslint/js": "^9",
     "@nx/eslint": "^20",
     "@nx/eslint-plugin": "^20",
     "@nx/js": "^20",
-    "@nx/nest": "^20",
     "@nx/node": "^20",
     "@nx/workspace": "^20",
     "@types/node": "~18.16.9",
@@ -24,11 +21,11 @@
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.2.6",
     "jsonc-eslint-parser": "2",
+    "knip": "^5.50.2",
     "nx": "20",
     "prettier": "^3",
     "tslib": "^2.3.0",
     "typescript": "~5.8",
-    "typescript-eslint": "^8",
     "verdaccio": "^6.0.5"
   },
   "nx": {

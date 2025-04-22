@@ -1,183 +1,153 @@
-/**
- * Observability utilities (logging, metrics, tracing)
- */
-import {
-  Effect,
-  Layer,
-  LogLevel,
-  Metric,
-  Context,
-  pipe
-} from 'effect'
-import { AppConfigTag } from './context'
+import { Effect, Context, Layer, Console } from 'effect'
 
 /**
- * Custom logger interface
+ * Span interface for tracing
  */
-export interface AgenticzLogger {
-  log(message: string, level: LogLevel.LogLevel): Effect.Effect<void>
-  debug(message: string): Effect.Effect<void>
-  info(message: string): Effect.Effect<void>
-  warn(message: string): Effect.Effect<void>
-  error(message: string): Effect.Effect<void>
-  withContext(context: Record<string, unknown>): AgenticzLogger
+export interface Span {
+  /** Set an attribute on the span */
+  setAttribute(key: string, value: string | number | boolean): void
+  /** Record an exception in the span */
+  recordException(error: Error): void
+  /** End the span */
+  end(): void
 }
 
 /**
- * Context tag for AgenticzLogger
+ * Observability service for logging, metrics and tracing
  */
-export class AgenticzLoggerTag extends Context.Tag('AgenticzLoggerTag')<AgenticzLoggerTag, AgenticzLogger>() {}
-
-/**
- * Create a logger with context
- */
-const createLogger = (context: Record<string, unknown> = {}): AgenticzLogger => {
-  const logger: AgenticzLogger = {
-    log: (message, level) => {
-      const formattedMessage = JSON.stringify({ ...context, message })
-      const timestamp = new Date().toISOString()
-      const levelName = level === LogLevel.Debug ? 'DEBUG' :
-                       level === LogLevel.Info ? 'INFO' :
-                       level === LogLevel.Warning ? 'WARN' :
-                       level === LogLevel.Error ? 'ERROR' : 'INFO'
-      // eslint-disable-next-line no-console
-      console.log(`${timestamp} [${levelName}] ${formattedMessage}`)
-      return Effect.succeed(undefined)
-    },
-    debug: (message) => logger.log(message, LogLevel.Debug),
-    info: (message) => logger.log(message, LogLevel.Info),
-    warn: (message) => logger.log(message, LogLevel.Warning),
-    error: (message) => logger.log(message, LogLevel.Error),
-    withContext: (newContext) => createLogger({ ...context, ...newContext })
-  }
-  return logger
+export interface Observability {
+  /** Start a new span for tracing */
+  startSpan(options: {
+    name: string
+    attributes?: Record<string, string | number | boolean>
+  }): Span
+  /** Log an info message */
+  info(
+    message: string,
+    metadata?: Record<string, unknown>,
+  ): Effect.Effect<void, never, never>
+  /** Log a warning message */
+  warn(
+    message: string,
+    metadata?: Record<string, unknown>,
+  ): Effect.Effect<void, never, never>
+  /** Log an error message */
+  error(
+    message: string,
+    error?: Error,
+    metadata?: Record<string, unknown>,
+  ): Effect.Effect<void, never, never>
 }
 
 /**
- * Live layer for the logger
+ * Creates a span for tracing
  */
-export const AgenticzLoggerLive = Layer.succeed(
-  AgenticzLoggerTag,
-  createLogger()
-)
+export const createSpan = (options: {
+  name: string
+  attributes?: Record<string, string | number | boolean>
+}): Span => {
+  const startTime = Date.now()
+  const attributes = options.attributes || {}
 
-/**
- * Metrics namespace
- */
-export const metrics = {
-  /**
-   * Counter for agent task executions
-   */
-  taskExecutions: Metric.counter('agenticz_task_executions_total'),
-
-  /**
-   * Counter for agent task failures
-   */
-  taskFailures: Metric.counter('agenticz_task_failures_total'),
-
-  /**
-   * Counter for agent tool usages
-   */
-  toolUsages: Metric.counter('agenticz_tool_usages_total'),
-
-  /**
-   * Counter for LLM provider calls
-   */
-  llmCalls: Metric.counter('agenticz_llm_calls_total')
-}
-
-/**
- * Simple tracer interface
- */
-export interface AgenticzTracer {
-  span<A, E, R>(
-    name: string,
-    attributes: Record<string, string>,
-    effect: Effect.Effect<A, E, R>
-  ): Effect.Effect<A, E, R>
-}
-
-/**
- * Context tag for AgenticzTracer
- */
-export class AgenticzTracerTag extends Context.Tag('AgenticzTracerTag')<AgenticzTracerTag, AgenticzTracer>() {}
-
-/**
- * Live layer for the tracer
- */
-export const AgenticzTracerLive = Layer.succeed(
-  AgenticzTracerTag,
-  {
-    span: <A, E, R>(
-      name: string,
-      attributes: Record<string, string>,
-      effect: Effect.Effect<A, E, R>
-    ): Effect.Effect<A, E, R> => {
-      const start = Date.now()
-      return pipe(
-        effect,
-        Effect.tap(() => {
-          const duration = Date.now() - start
-          // eslint-disable-next-line no-console
-          console.debug(`TRACE [${name}] Duration: ${duration}ms, Attributes: ${JSON.stringify(attributes)}`)
-          return Effect.succeed(undefined)
-        })
-      )
-    }
-  }
-)
-
-/**
- * Combined observability layer
- */
-export const ObservabilityLive = Layer.merge(
-  AgenticzLoggerLive,
-  AgenticzTracerLive
-)
-
-/**
- * Helper to log a message
- * @param message Message to log
- * @param level Log level
- */
-export const log = (message: string, level: 'debug' | 'info' | 'warn' | 'error' = 'info'): Effect.Effect<string, never, AgenticzLoggerTag> => {
-  return Effect.gen(function* (_) {
-    const logger = yield* _(AgenticzLoggerTag)
-    
-    switch (level) {
-      case 'debug':
-        yield* _(logger.debug(message))
-        break
-      case 'info':
-        yield* _(logger.info(message))
-        break
-      case 'warn':
-        yield* _(logger.warn(message))
-        break
-      case 'error':
-        yield* _(logger.error(message))
-        break
-      default:
-        yield* _(logger.info(message))
-    }
-    
-    return message
-  })
-}
-
-/**
- * Helper to create a traced section
- * @param name Name of the span
- * @param attributes Span attributes
- * @param effect The effect to trace
- */
-export const traced = <A, E, R>(
-  name: string,
-  attributes: Record<string, string> = {},
-  effect: Effect.Effect<A, E, R>
-): Effect.Effect<A, E, R | AgenticzTracerTag> => {
-  return Effect.flatMap(
-    AgenticzTracerTag,
-    (tracer) => tracer.span(name, attributes, effect)
+  // Log span start
+  Effect.runSync(
+    Console.log(`[SPAN START] ${options.name} ${JSON.stringify(attributes)}`),
   )
+
+  return {
+    setAttribute(key: string, value: string | number | boolean) {
+      attributes[key] = value
+      // Not logging every attribute to reduce noise
+    },
+    recordException(error: Error) {
+      Effect.runSync(
+        Console.error(`[SPAN ERROR] ${options.name} ${error.message}`, error),
+      )
+    },
+    end() {
+      const duration = Date.now() - startTime
+      attributes['duration_ms'] = duration
+      Effect.runSync(
+        Console.log(`[SPAN END] ${options.name} ${JSON.stringify(attributes)}`),
+      )
+    },
+  }
+}
+
+/**
+ * Creates an info log message
+ */
+export const createInfoLog = (
+  message: string,
+  metadata?: Record<string, unknown>,
+): Effect.Effect<void, never, never> => {
+  const logMessage = metadata
+    ? `${message} ${JSON.stringify(metadata)}`
+    : message
+  return Console.log(`[INFO] ${logMessage}`)
+}
+
+/**
+ * Creates a warning log message
+ */
+export const createWarnLog = (
+  message: string,
+  metadata?: Record<string, unknown>,
+): Effect.Effect<void, never, never> => {
+  const logMessage = metadata
+    ? `${message} ${JSON.stringify(metadata)}`
+    : message
+  return Console.warn(`[WARN] ${logMessage}`)
+}
+
+/**
+ * Creates an error log message
+ */
+export const createErrorLog = (
+  message: string,
+  error?: Error,
+  metadata?: Record<string, unknown>,
+): Effect.Effect<void, never, never> => {
+  const logMessage = metadata
+    ? `${message} ${JSON.stringify(metadata)}`
+    : message
+  return Console.error(`[ERROR] ${logMessage}`, error)
+}
+
+/**
+ * Creates the observability service implementation
+ */
+export const makeObservability = (): Observability => ({
+  startSpan: createSpan,
+  info: createInfoLog,
+  warn: createWarnLog,
+  error: createErrorLog,
+})
+
+/**
+ * Observability Context tag
+ */
+export const ObservabilityContext =
+  Context.GenericTag<Observability>('Observability')
+
+/**
+ * Layer providing the default observability implementation
+ */
+export const ObservabilityLive = Layer.succeed(
+  ObservabilityContext,
+  makeObservability(),
+)
+
+/**
+ * Static utility methods for observability
+ */
+export const Observability = {
+  /** Get the observability service */
+  get: ObservabilityContext,
+
+  /** Start a new span for tracing */
+  startSpan: createSpan,
+
+  /** Create a Layer with the default observability implementation */
+  layer: ObservabilityLive,
 }

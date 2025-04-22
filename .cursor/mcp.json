@@ -2,6 +2,18 @@
   "mcpServers": {
     "nx-mcp": {
       "url": "http://localhost:9131/sse"
+    },
+    "effect-docs-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcpdoc",
+        "mcpdoc",
+        "--urls",
+        "Effect.js:https://effect.website/llms.txt",
+        "--transport",
+        "stdio"
+      ]
     }
   }
 }

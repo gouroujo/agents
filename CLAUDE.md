@@ -25,6 +25,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Use camelCase for variables, functions, and methods
 - Respect the SOLID principles, avoide Requirement Leakage by using Layers
 - Implement end-to-end observability
+- NEVER write unused code, less is always better
+- use the nx script 'knip' to check if you don't have unused file
+- use the nx script 'lint' to check linting and format
 
 # Project objectives
 - Create a Typescript / Node.JS library to create collaborative teams of autonomous AI agents

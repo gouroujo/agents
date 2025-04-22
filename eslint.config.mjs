@@ -1,4 +1,4 @@
-import nx from '@nx/eslint-plugin';
+import nx from '@nx/eslint-plugin'
 
 import { defineConfig } from 'eslint/config'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'

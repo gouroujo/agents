@@ -1,0 +1,43 @@
+{
+  "name": "demo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/demo/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/demo",
+        "main": "apps/demo/src/main.ts",
+        "tsConfig": "apps/demo/tsconfig.app.json",
+        "assets": [
+          "apps/demo/src/assets"
+        ]
+      }
+    },
+    "run": {
+      "executor": "@nx/js:node",
+      "dependsOn": [
+        "^build"
+      ],
+      "options": {
+        "buildTarget": "demo:build",
+        "watch": false
+      }
+    },
+    "watch": {
+      "executor": "@nx/js:node",
+      "dependsOn": [
+        "^build"
+      ],
+      "options": {
+        "buildTarget": "demo:build",
+        "watch": true
+      }
+    }
+  },
+  "tags": []
+}

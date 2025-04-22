@@ -1,246 +1,149 @@
-# AgenticzJS Development Tasks
+# Autonomous Agent Teams Library - Development Roadmap
 
-This document outlines the tasks required to develop a first working version of the AgenticzJS library.
+This document outlines the essential development phases and tasks for building a TypeScript library focused on creating collaborative teams of autonomous AI agents, inspired by CrewAI, with Ollama integration for testing.
 
-## Phase 1: Core Infrastructure ✅
+## Phase 1: Minimum Viable Product (MVP)
 
-### 1. Set up Effect.js Integration ✅
-- [x] Install Effect.js and related dependencies
-- [x] Set up base Effect.js patterns and utilities
-- [x] Create common types and interfaces for Effect-based operations
+### Tasks
+- [ ] Create configurable autonomous agents with customizable parameters
+  - **Validation**: Can instantiate an agent with different parameters (model, temperature, backstory, personnality traits,...) and observe different behaviors
+  
+- [ ] Connect agents to Ollama for local model testing
+  - **Validation**: Agent can send prompts to Ollama with the model 'llama3.2' and receive responses
 
-### 2. Implement Base Error Handling ✅
-- [x] Define custom error types hierarchy
-- [x] Implement error handling utilities
-- [x] Set up context-aware error reporting
+- [ ] Implement basic prompt construction and response handling
+  - **Validation**: Agent can format information into effective prompts and parse structured responses
 
-### 3. Create Observability Framework ✅
-- [x] Set up logging infrastructure using Effect.js
-- [x] Implement metrics collection
-- [x] Create tracing utilities for execution flows
+- [ ] Enable agents to execute simple tasks with clear instructions
+  - **Validation**: Agent can follow a sequence of instructions to complete a defined task
 
-## Phase 2: LLM Integration
+- [ ] Enable end-to-end observability on agent behavior
+  - **Validation**: Able to visualize a complete trace of the process with prompts, timing, responses,...
 
-### 4. Define LLM Provider Interface
-- [ ] Create base LLM provider interface
-- [ ] Define request/response types
-- [ ] Implement streaming response handling
+### Acceptance Criteria for MVP
+- A single agent can be configured and connected to Ollama
+- The agent can complete a simple task with predefined instructions
+- Basic examples demonstrate the core functionality
 
-### 5. Implement Ollama Provider
-- [ ] Create Ollama API client
-- [ ] Implement Ollama-specific request formatting
-- [ ] Set up response parsing and error handling
-- [ ] Add configuration options for Ollama models
+## Phase 2: Team Formation
 
-### 6. Create Prompt Engineering Utilities
-- [ ] Implement prompt template system
-- [ ] Create tools for prompt manipulation and construction
-- [ ] Add context window management utilities
+### Tasks
+- [ ] Enable grouping multiple agents into a team
+  - **Validation**: Can create a team with multiple agents that share context
 
-## Phase 3: Agent Infrastructure
+- [ ] Implement supervisor functionality for team coordination
+  - **Validation**: Supervisor can distribute work and evaluate results from team members
 
-### 7. Implement Agent Core
-- [ ] Create base Agent interface and implementations
-- [ ] Define agent state management
-- [ ] Implement agent execution context
-- [ ] Create agent retry and backoff mechanisms
+- [ ] Create task planning capability to break down complex objectives
+  - **Validation**: Planner can take a complex task and create subtasks for different agents
 
-### 8. Add Agent Configuration
-- [ ] Create builder pattern for agent configuration
-- [ ] Implement agent role and goal definitions
-- [ ] Add personality and behavior configuration
-- [ ] Create delegation capabilities between agents
+- [ ] Enable basic communication between team members
+  - **Validation**: Agents can share information and results with other team members
 
-### 9. Develop Agent Memory
-- [ ] Define memory interface and base implementation
-- [ ] Implement in-memory storage adapter
-- [ ] Create memory query and retrieval mechanisms
-- [ ] Add vectorization support for semantic search
+- [ ] Implement task tracking and status reporting
+  - **Validation**: System accurately reports progress and completion status of tasks
 
-### 10. Implement Human-in-the-Loop Integration
-- [ ] Create human feedback interface
-- [ ] Implement approval mechanisms for task plans
-- [ ] Add progress notification system
-- [ ] Develop feedback integration for agent learning
+### Acceptance Criteria for Team Formation
+- Multiple agents can work together as a team
+- Complex tasks can be broken down into manageable subtasks
+- Information flows effectively between team members
+- A supervisor can coordinate team activities and evaluate outputs
 
-## Phase 4: Tools System
+## Phase 3: Tools & Capabilities Extension
 
-### 11. Create Tool Framework
-- [ ] Define Tool interface
-- [ ] Implement tool registration system
-- [ ] Create tool execution context
-- [ ] Add tool discovery mechanism
+### Tasks
+- [ ] Create a tool framework for extending agent capabilities
+  - **Validation**: Can define a new tool and make it available to agents
 
-### 12. Implement Basic Tools
-- [ ] Add text processing tools
-- [ ] Implement web search/retrieval tools
-- [ ] Create file system interaction tools
-- [ ] Develop calculation and reasoning tools
-- [ ] Add input/output formatting tools
+- [ ] Implement common utility tools (web search, data processing)
+  - **Validation**: Agents can use tools to gather information or process data
 
-### 13. Add Tool Validation
-- [ ] Create parameter validation system
-- [ ] Implement tool usage permissions
-- [ ] Add execution constraints and rate limiting
-- [ ] Develop tool result validation
+- [ ] Enable agents to recognize when to use specific tools
+  - **Validation**: Agent correctly selects appropriate tools based on the task requirements
 
-## Phase 5: Task Planning
+- [ ] Add capability for agents to chain tools together for complex operations
+  - **Validation**: Agent can use multiple tools in sequence to solve multi-step problems
 
-### 14. Create Task Definition System
-- [ ] Define Task interface and implementations
-- [ ] Create task validation and normalization
-- [ ] Implement task priority handling
-- [ ] Add task dependency management
+- [ ] Implement result verification mechanisms
+  - **Validation**: System can detect and address potential errors in tool outputs
 
-### 15. Implement Task Planner
-- [ ] Create base planner interface
-- [ ] Implement LLM-based task decomposition
-- [ ] Add plan optimization capabilities
-- [ ] Create plan execution manager
-- [ ] Develop different planning strategies (sequential, parallel, adaptive)
+### Acceptance Criteria for Tools & Capabilities
+- Agents can use tools to extend their capabilities
+- A basic library of useful tools is available
+- Agents can select appropriate tools for different tasks
+- Tools can be combined for more complex operations
 
-### 16. Develop Task Execution
-- [ ] Implement task execution context
-- [ ] Create task result handling
-- [ ] Add error recovery for failed tasks
-- [ ] Implement execution monitoring and feedback
+## Phase 4: Advanced Collaboration
 
-## Phase 6: Team Collaboration
+### Tasks
+- [ ] Implement cross-team communication protocols
+  - **Validation**: Agents from different teams can share information and coordinate
 
-### 17. Implement Team Core
-- [ ] Create Team interface and implementation
-- [ ] Define team composition and structure
-- [ ] Implement team state management
-- [ ] Add concurrency control for team operations
+- [ ] Create mechanisms for agents to request and provide assistance
+  - **Validation**: Agents recognize when they need help and can request it from appropriate team members
 
-### 18. Add Team Supervisor
-- [ ] Create supervisor agent functionality
-- [ ] Implement team coordination mechanisms
-- [ ] Add progress monitoring and reporting
-- [ ] Develop conflict resolution strategies
+- [ ] Develop conflict resolution strategies for supervisors
+  - **Validation**: Supervisor can effectively resolve different approaches or contradictory results
 
-### 19. Develop Collaboration Patterns
-- [ ] Implement sequential collaboration
-- [ ] Create parallel task execution
-- [ ] Add consensus-based decision making
-- [ ] Develop role-based collaboration
-- [ ] Create hierarchical team structures
+- [ ] Enable dynamic task creation based on discovered information
+  - **Validation**: Teams can create new tasks in response to findings or changing requirements
 
-### 20. Implement Collaboration Strategies
-- [ ] Create strategy pattern for team collaboration
-- [ ] Implement different team workflows
-- [ ] Add adaptive collaboration based on task requirements
-- [ ] Develop cross-team collaboration capabilities
+- [ ] Implement parallel task execution for efficiency
+  - **Validation**: Multiple non-dependent tasks can be processed simultaneously
 
-## Phase 7: Integration & Testing
+### Acceptance Criteria for Advanced Collaboration
+- Multiple teams can work together on larger objectives
+- Agents proactively seek help when needed
+- Conflicts are effectively resolved by supervisors
+- Teams adapt to new information by creating appropriate tasks
+- System efficiently processes tasks in parallel when possible
 
-### 21. Create Public API
-- [ ] Design clean, consistent API
-- [ ] Implement factory functions and builders
-- [ ] Create comprehensive TypeScript type definitions
-- [ ] Develop fluent interfaces for common operations
+## Phase 5: Human Integration & Refinement
 
-### 22. Add Documentation
-- [ ] Write API documentation
-- [ ] Create usage examples
-- [ ] Add architectural guidance
-- [ ] Generate TypeDoc documentation
+### Tasks
+- [ ] Implement human-in-the-loop functionality for guidance and feedback
+  - **Validation**: System can pause for human input at critical decision points
 
-### 23. Implement Example Scenarios
-- [ ] Create simple single-agent example
-- [ ] Implement team collaboration example
-- [ ] Develop end-to-end workflow example
-- [ ] Build real-world use case examples
+- [ ] Create agent reflection mechanisms for continuous improvement
+  - **Validation**: Agents learn from past experiences and improve performance over time
 
-### 24. Add Testing Infrastructure
-- [ ] Set up unit testing framework
-- [ ] Create integration tests
-- [ ] Implement E2E testing for complex scenarios
-- [ ] Add test mocks for LLM providers
-- [ ] Create performance benchmarking tests
+- [ ] Add state persistence to save and restore agent and team status
+  - **Validation**: Work can be suspended and resumed across different sessions
 
-## Phase 8: First Release Preparation
+- [ ] Enable performance monitoring and optimization
+  - **Validation**: System provides metrics on efficiency and effectiveness of agents and teams
 
-### 25. Performance Optimization
-- [ ] Identify and resolve bottlenecks
-- [ ] Optimize memory usage
-- [ ] Improve response times
-- [ ] Implement caching strategies
-- [ ] Add batch processing capabilities
+- [ ] Create comprehensive logging for transparency
+  - **Validation**: All significant agent actions and decisions are recorded and reviewable
 
-### 26. API Finalization
-- [ ] Review and refine public API
-- [ ] Ensure backward compatibility
-- [ ] Create migration guidelines for future changes
-- [ ] Develop API versioning strategy
+### Acceptance Criteria for Human Integration & Refinement
+- Humans can intervene and provide guidance at critical points
+- Agents improve based on experience and feedback
+- Work can continue across multiple sessions
+- System performance can be measured and optimized
+- Complete transparency into agent decision-making
 
-### 27. Package and Release
-- [ ] Set up build process and bundling
-- [ ] Configure npm package publishing
-- [ ] Create release notes
-- [ ] Prepare documentation site
-- [ ] Set up continuous integration/deployment
+## Phase 6: Documentation & Examples
 
-### 28. Security Review
-- [ ] Conduct security audit
-- [ ] Implement input validation and sanitization
-- [ ] Add rate limiting and abuse prevention
-- [ ] Create security documentation
+### Tasks
+- [ ] Create comprehensive API documentation
+  - **Validation**: Documentation covers all features with clear explanations and examples
 
-## Detailed Task Breakdown for Initial Implementation
+- [ ] Develop end-to-end examples for common use cases
+  - **Validation**: Examples demonstrate practical applications across different domains
 
-### Setting up Effect.js Integration
-- Install dependencies: `npm install effect`
-- Create utility files for Effect.js patterns in `libs/core/src/utils/effect-utils.ts`
-- Set up common Effect.js context providers in `libs/core/src/utils/context.ts`
-- Implement observability utilities in `libs/core/src/utils/observability.ts`
+- [ ] Write quickstart guide for new users
+  - **Validation**: New users can create a working agent system within 15 minutes
 
-### Implementing Ollama Provider
-- Create Ollama provider interface in `libs/ollama/src/provider/ollama-provider.ts`
-- Implement HTTP client for Ollama API in `libs/ollama/src/provider/ollama-client.ts`
-- Add request/response types in `libs/ollama/src/provider/types.ts`
-- Create configuration options in `libs/ollama/src/provider/config.ts`
-- Implement streaming response handling in `libs/ollama/src/provider/stream.ts`
+- [ ] Create tutorials for different agent team configurations
+  - **Validation**: Tutorials show how to build specialized teams for different purposes
 
-### Creating Agent Core
-- Define Agent interface in `libs/core/src/agent/agent.ts`
-- Implement base agent class in `libs/core/src/agent/base-agent.ts`
-- Create agent factory in `libs/core/src/agent/agent-factory.ts`
-- Add agent configuration types in `libs/core/src/agent/types.ts`
-- Implement agent delegation in `libs/core/src/agent/delegation.ts`
-- Create retry mechanisms in `libs/core/src/agent/retry.ts`
+- [ ] Document best practices and patterns
+  - **Validation**: Guidelines help users avoid common pitfalls and optimize team design
 
-### Implementing Memory System
-- Create Memory interface in `libs/core/src/memory/memory.ts`
-- Implement in-memory storage in `libs/core/src/memory/in-memory-storage.ts`
-- Add vectorization support in `libs/core/src/vectorization/index.ts`
-- Implement context window management in `libs/core/src/memory/context-window.ts`
-
-### Implementing Tool System
-- Create Tool interface in `libs/core/src/tool/tool.ts`
-- Implement tool registry in `libs/core/src/tool/tool-registry.ts`
-- Add tool execution context in `libs/core/src/tool/tool-context.ts`
-- Define basic tools in `libs/core/src/tool/basic-tools/`
-- Implement tool validation in `libs/core/src/tool/validation.ts`
-
-### Developing Team Infrastructure
-- Create Team interface in `libs/core/src/team/team.ts`
-- Implement base team class in `libs/core/src/team/base-team.ts`
-- Add team configuration in `libs/core/src/team/team-config.ts`
-- Create team factory in `libs/core/src/team/team-factory.ts`
-- Implement collaboration strategies in `libs/core/src/collaboration/strategies/`
-- Add supervisor functionality in `libs/core/src/team/supervisor.ts`
-
-### Adding Task Planning
-- Define Task interface in `libs/core/src/task/task.ts`
-- Create task planner in `libs/core/src/task/task-planner.ts`
-- Implement plan execution in `libs/core/src/task/plan-executor.ts`
-- Add task result handling in `libs/core/src/task/task-result.ts`
-- Create plan optimization in `libs/core/src/task/plan-optimizer.ts`
-- Implement task dependencies in `libs/core/src/task/dependencies.ts`
-
-### Implementing Human-in-the-Loop
-- Create HumanInterface in `libs/core/src/human/human-interface.ts`
-- Implement feedback processing in `libs/core/src/human/feedback.ts`
-- Add approval mechanisms in `libs/core/src/human/approval.ts`
-- Create progress notification in `libs/core/src/human/notification.ts`
+### Acceptance Criteria for Documentation & Examples
+- Documentation is comprehensive and clear
+- Examples demonstrate practical applications
+- New users can get started quickly
+- Tutorials cover a range of common use cases
+- Best practices guide helps users design effective agent teams
