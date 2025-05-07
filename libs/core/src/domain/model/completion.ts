@@ -1,36 +1,53 @@
-/**
- * CompletionConfig
- */
-export interface CompletionConfig {
-  /** Controls randomness (0-1) */
-  readonly temperature?: number
-  /** Top-p sampling parameter (0-1) */
-  readonly topP?: number
-  /** Max tokens to generate */
-  readonly maxTokens?: number
-  /** Token presence penalty */
-  readonly presencePenalty?: number
-  /** Token frequency penalty */
-  readonly frequencyPenalty?: number
-  /** Stop sequences */
-  readonly stop?: ReadonlyArray<string>
+import { Context, Effect } from 'effect'
+import * as Chunk from 'effect/Chunk'
+import * as Option from 'effect/Option'
+import { Span } from 'effect/Tracer'
+import { AIError } from './error'
+import * as JsonSchema from 'effect/JSONSchema'
+import { Message } from '../thread/message'
+
+export class Completions extends Context.Tag('@agenticz/Completions')<
+  Completions,
+  {
+    readonly generate: (input: any) => Effect.Effect<any, AIError>
+  }
+>() {}
+
+export interface CompletionOptions {
+  readonly system: Option.Option<string>
+  readonly input: Chunk.Chunk<Message>
+  // readonly tools: Array<{
+  //   readonly name: string
+  //   readonly description: string
+  //   readonly parameters: JsonSchema.JsonSchema7
+  //   readonly structured: boolean
+  // }>
+  readonly required: boolean | string
+}
+export interface CompletionOptionsWithSpan extends CompletionOptions {
+  readonly span: Span
 }
 
-/**
- * Response from a language model completion request
- */
-export interface CompletionResponse {
-  /** The generated text */
-  readonly content: string
-  /** Metadata about the response */
-  readonly metadata: {
-    /** The number of tokens in the prompt */
-    readonly promptTokens?: number
-    /** The number of tokens in the completion */
-    readonly completionTokens?: number
-    /** The number of total tokens used */
-    readonly totalTokens?: number
-    /** The model used */
-    readonly model: string
-  }
+export const make = (options: {
+  readonly generate: (
+    options: CompletionOptionsWithSpan,
+  ) => Effect.Effect<any, AIError>
+}): Effect.Effect<typeof Completions.Service> => {
+  return Effect.succeed(
+    Completions.of({
+      generate: (input) =>
+        Effect.useSpan(
+          'Completions.create',
+          { captureStackTrace: false },
+          (span) =>
+            options.generate({
+              system: Option.none(), // could use Effect.serviceOption(AiInput.SystemInstruction)
+              input: Chunk.empty(),
+              // tools: [],
+              required: false,
+              span,
+            }),
+        ),
+    }),
+  )
 }

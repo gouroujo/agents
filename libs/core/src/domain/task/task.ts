@@ -1,8 +1,8 @@
 import { Schema } from 'effect'
-import { idSchema } from '../utils'
+import { Identifier } from '../utils'
 
 export const Task = Schema.Struct({
-  id: idSchema,
+  id: Identifier('Task'),
   description: Schema.String,
   context: Schema.optional(Schema.String),
   // expectedOutput: Schema.optionalWith(Schema.Struct),

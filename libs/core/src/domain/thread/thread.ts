@@ -1,9 +1,9 @@
 import { Schema } from 'effect'
 import { Message } from './message'
-import { idSchema } from '../utils'
+import { Identifier } from '../utils'
 
 export class Thread extends Schema.Class<Thread>('Thread')({
-  id: idSchema,
+  id: Identifier('Thread'),
   messages: Schema.optionalWith(Schema.Array(Message), {
     default: () => [],
     exact: true,

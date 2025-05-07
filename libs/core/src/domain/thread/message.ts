@@ -1,9 +1,9 @@
 import { Effect, pipe, Schema } from 'effect'
 import { ParseError } from 'effect/Cron'
-import { idSchema } from '../utils'
+import { Identifier } from '../utils'
 
 const commonAttributes = {
-  id: idSchema,
+  id: Identifier('Message'),
 }
 export const SystemMessage = Schema.Struct({
   ...commonAttributes,

@@ -1,46 +1,54 @@
-import { Chunk, Effect, pipe, Schema, Stream } from 'effect'
-import { idSchema } from '../utils'
-import { Model } from '../model'
-import { Task } from '../task/task'
-import { Thread, UserMessage } from '../thread'
+import {
+  Chunk,
+  Context,
+  Effect,
+  Layer,
+  pipe,
+  Schema,
+  Stream,
+  flow,
+} from 'effect'
+import { Identifier } from '../utils'
+import { Completions } from '../model'
 
-// export const Agent = Schema.Struct({
-//   id: idSchema,
-//   backstory: Schema.String,
-// })
-// export type Agent = typeof Agent.Type
+const AgentSchema = Schema.Struct({
+  id: Identifier('Agent'),
+  backstory: Schema.NonEmptyString,
+  model: Schema.declare(
+    (input: unknown): input is Completions.Completions['Type'] =>
+      input instanceof Completions.Completions,
+  ),
+})
 
-/**
- * Create a retry schedule for task execution
- */
-// const createRetrySchedule = () =>
-//   Schedule.exponential(Duration.millis(500), 2).pipe(
-//     Schedule.upTo(3),
-//     Schedule.whileInput(
-//       (error: TaskError | LLMError) =>
-//         error instanceof LLMNetworkError || error instanceof LLMError,
+export class Agent extends Context.Tag('@agenticz/Agent')<
+  Agent,
+  {
+    readonly execute: (task: string) => Effect.Effect<string>
+  }
+>() {
+  static make = flow(AgentSchema.make, (props) => ({
+    execute: (task: string) =>
+      Effect.gen(function* () {
+        return yield* props.model.generate('aa')
+      }),
+  }))
+}
+
+// export class Agent extends Schema.TaggedClass<Agent>()('Agent', {
+//   id: IdentifierSchema,
+//   backstory: Schema.NonEmptyString,
+//   model: Schema.,
+// }) {
+// execute(task: Task) {
+//   const model = this.model
+//   const thread = Thread.make({
+//     messages: [UserMessage.make({ content: task.description, role: 'user' })],
+//   })
+//   return pipe(
+//     Stream.runCollect(model.generate(thread)),
+//     Effect.map((chunk) =>
+//       chunk.pipe(Chunk.reduce('', (b, response) => b + response.content)),
 //     ),
 //   )
-
-export class Agent extends Schema.Class<Agent>('Agent')({
-  id: idSchema,
-  backstory: Schema.NonEmptyString,
-}) {
-  execute(task: Task) {
-    return pipe(
-      Effect.gen(function* () {
-        const model = yield* Model
-        const thread = Thread.make({
-          messages: [
-            UserMessage.make({ content: task.description, role: 'user' }),
-          ],
-        })
-        return Stream.runCollect(model.generate(thread))
-      }),
-      Effect.flatten,
-      Effect.map((chunk) =>
-        chunk.pipe(Chunk.reduce('', (b, response) => b + response.content)),
-      ),
-    )
-  }
-}
+// }
+// }
