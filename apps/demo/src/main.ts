@@ -19,6 +19,12 @@ import { Context, Effect, Layer, pipe } from 'effect'
 const Llama32 = OllamaCompletion.model('llama3.2')
 const Ollama = OllamaClient.layerConfig()
 const OllamaWithHttp = Layer.provide(Ollama, NodeHttpClient.layerUndici)
+
+const NodeSdkLive = NodeSdk.layer(() => ({
+  resource: { serviceName: 'example' },
+  // Export span data to the console
+  spanProcessor: new BatchSpanProcessor(new ConsoleSpanExporter()),
+}))
 /**
  * Main function to run the demo
  */
@@ -57,4 +63,9 @@ const main = Effect.gen(function* () {
 //   Effect.runPromise,
 // )
 
-pipe(main, Effect.provide(OllamaWithHttp), Effect.runPromise)
+pipe(
+  main,
+  Effect.provide(OllamaWithHttp),
+  Effect.provide(NodeSdkLive),
+  Effect.runPromise,
+)
