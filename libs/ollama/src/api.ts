@@ -6,16 +6,13 @@ import { pipe } from 'effect'
 import * as Effect from 'effect/Effect'
 import * as S from 'effect/Schema'
 import { OllamaGenerateErrorResponse, OllamaGenerateResponse } from './dto'
+import * as Console from 'effect/Console'
 
 export const make = (
   httpClient: HttpClient.HttpClient,
   options: {
-    readonly transformClient?:
-      | ((
-          client: HttpClient.HttpClient,
-        ) => Effect.Effect<HttpClient.HttpClient>)
-      | undefined
-  } = {},
+    readonly baseUrl?: string
+  },
 ) => {
   const unexpectedStatus = (response: HttpClientResponse.HttpClientResponse) =>
     Effect.flatMap(
@@ -31,13 +28,6 @@ export const make = (
         ),
     )
 
-  const applyClientTransform = (
-    client: HttpClient.HttpClient,
-  ): Effect.Effect<HttpClient.HttpClient> =>
-    options.transformClient
-      ? options.transformClient(client)
-      : Effect.succeed(client)
-
   const decodeError =
     <A, I, R>(schema: S.Schema<A, I, R>) =>
     (response: HttpClientResponse.HttpClientResponse) =>
@@ -49,28 +39,28 @@ export const make = (
   return {
     chat: () =>
       pipe(
-        Effect.gen(function* () {
-          const client = yield* applyClientTransform(httpClient)
-          console.log('called')
-          const request = yield* HttpClientRequest.make('POST')(
-            '/api/generate',
-          ).pipe(
-            HttpClientRequest.bodyJson({
-              model: 'llama3.2',
-              messages: [
-                {
-                  role: 'user',
-                  content: 'why is the sky blue?',
-                },
-              ],
-            }),
-          )
-          return yield* client.execute(request)
+        HttpClientRequest.make('POST')('/api/chat'),
+        HttpClientRequest.prependUrl(
+          options.baseUrl ?? 'http://localhost:11434',
+        ),
+        HttpClientRequest.bodyJson({
+          model: 'llama3.2',
+          messages: [
+            {
+              role: 'user',
+              content: 'why is the sky blue?',
+            },
+          ],
+          stream: false,
         }),
+        Effect.flatMap((request) => httpClient.execute(request)),
         Effect.flatMap(
           HttpClientResponse.matchStatus({
-            '2xx': (r) =>
-              HttpClientResponse.schemaBodyJson(OllamaGenerateResponse)(r),
+            '2xx': (r) => {
+              return HttpClientResponse.schemaBodyJson(OllamaGenerateResponse)(
+                r,
+              )
+            },
             '4xx': decodeError(OllamaGenerateErrorResponse),
             orElse: unexpectedStatus,
           }),

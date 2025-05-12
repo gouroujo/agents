@@ -14,24 +14,20 @@ import { Completions } from '../model'
 const AgentSchema = Schema.Struct({
   id: Identifier('Agent'),
   backstory: Schema.NonEmptyString,
-  model: Schema.declare(
-    (input: unknown): input is Completions.Completions['Type'] =>
-      input instanceof Completions.Completions,
-  ),
 })
 
-export class Agent extends Context.Tag('@agenticz/Agent')<
-  Agent,
-  {
-    readonly execute: (task: string) => Effect.Effect<string>
+export const make = (model: Context.Context<Completions.CompletionModel>) => {
+  return {
+    exececute(task: string) {
+      return Effect.provide(
+        Effect.gen(function* () {
+          const model = yield* Completions.CompletionModel
+          return yield* model.generate(task)
+        }),
+        model,
+      )
+    },
   }
->() {
-  static make = flow(AgentSchema.make, (props) => ({
-    execute: (task: string) =>
-      Effect.gen(function* () {
-        return yield* props.model.generate('aa')
-      }),
-  }))
 }
 
 // export class Agent extends Schema.TaggedClass<Agent>()('Agent', {

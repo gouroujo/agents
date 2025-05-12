@@ -9,11 +9,14 @@
 import { Agent } from '@agenticz/core'
 import { OllamaClient, OllamaCompletion } from '@agenticz/ollama'
 import { NodeHttpClient } from '@effect/platform-node'
-
-import { Effect, Layer, pipe } from 'effect'
+import { NodeSdk } from '@effect/opentelemetry'
+import {
+  ConsoleSpanExporter,
+  BatchSpanProcessor,
+} from '@opentelemetry/sdk-trace-base'
+import { Context, Effect, Layer, pipe } from 'effect'
 
 const Llama32 = OllamaCompletion.model('llama3.2')
-
 const Ollama = OllamaClient.layerConfig()
 const OllamaWithHttp = Layer.provide(Ollama, NodeHttpClient.layerUndici)
 /**
@@ -33,17 +36,10 @@ const OllamaWithHttp = Layer.provide(Ollama, NodeHttpClient.layerUndici)
 
 const main = Effect.gen(function* () {
   console.log('dqdqw')
-  // Build the `AiModel` into a `Provider`
   const llama = yield* Llama32
-  console.log(llama)
-  // Provide the implementation of `Completions` to `generateDadJoke`
-  const agent = Agent.make({
-    backstory: 'You tell joke',
-    model: llama as any,
-  })
-  console.log('aaa')
-  const response = yield* agent.execute('Tell me a joke')
-  console.log('bbb', response)
+  const agent = Agent.make(llama)
+  const response = yield* agent.exececute('Tell me a joke')
+  console.log(response)
   return response
 })
 

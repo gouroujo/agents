@@ -22,7 +22,7 @@ export const make = (options: OllamaClientOptions = {}) => {
   return Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
     const httpClientTransformed = yield* applyClientTransform(httpClient)
-    const api = OllamaAPI.make(httpClientTransformed, options)
+    const api = OllamaAPI.make(httpClientTransformed, {})
 
     return api
   })

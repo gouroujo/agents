@@ -1,26 +1,15 @@
 import { AIError, AIModel, Completions } from '@agenticz/core'
-import { Context, Effect } from 'effect'
+import { Context, Effect, Layer } from 'effect'
 import { OllamaClient } from './client'
 import { OllamaGenerateResponse } from './dto'
+import * as Console from 'effect/Console'
 
 const modelCacheKey = Symbol.for('@agenticz/Ollama/CacheKey')
 
-export const model = (
-  model: string,
-  config?: Omit<any, 'model'>,
-): AIModel.AIModel<Completions.Completions, OllamaClient> =>
-  AIModel.make({
-    model,
-    cacheKey: modelCacheKey,
-    requires: OllamaClient,
-    provides: make({ model, config }).pipe(
-      Effect.map((completions) =>
-        Context.make(Completions.Completions, completions),
-      ),
-    ),
-  })
+export const model = (model: string, config?: Omit<any, 'model'>) =>
+  make({ model, config })
 
-const make = Effect.fnUntraced(function* (options: {
+export const make = Effect.fnUntraced(function* (options: {
   readonly model: string
   readonly config?: Omit<any, 'model'>
 }) {
@@ -35,19 +24,19 @@ const make = Effect.fnUntraced(function* (options: {
     return Effect.succeed(42)
   }
 
-  return yield* Completions.make({
+  return Completions.make({
     generate({ span, ...options }) {
       return makeRequest(options).pipe(
         // Effect.tap((request) => annotateRequest(span, request)),
         Effect.flatMap(client.chat),
         // Effect.tap((response) => annotateChatResponse(span, response)),
-        Effect.map((response) => response.response),
+        Effect.map((response) => response.message.content),
         Effect.catchAll((cause) =>
           Effect.fail(
             new AIError({
               module: 'OpenAiCompletions',
               method: 'create',
-              description: 'An error occurred',
+              description: 'An error occurred: ' + cause,
               cause,
             }),
           ),

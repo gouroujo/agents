@@ -6,16 +6,16 @@ import { AIError } from './error'
 import * as JsonSchema from 'effect/JSONSchema'
 import { Message } from '../thread/message'
 
-export class Completions extends Context.Tag('@agenticz/Completions')<
-  Completions,
+export class CompletionModel extends Context.Tag('@agenticz/CompletionModel')<
+  CompletionModel,
   {
-    readonly generate: (input: any) => Effect.Effect<any, AIError>
+    readonly generate: (input: string) => Effect.Effect<string, AIError>
   }
 >() {}
 
 export interface CompletionOptions {
   readonly system: Option.Option<string>
-  readonly input: Chunk.Chunk<Message>
+  readonly input: Chunk.NonEmptyChunk<string>
   // readonly tools: Array<{
   //   readonly name: string
   //   readonly description: string
@@ -31,23 +31,21 @@ export interface CompletionOptionsWithSpan extends CompletionOptions {
 export const make = (options: {
   readonly generate: (
     options: CompletionOptionsWithSpan,
-  ) => Effect.Effect<any, AIError>
-}): Effect.Effect<typeof Completions.Service> => {
-  return Effect.succeed(
-    Completions.of({
-      generate: (input) =>
-        Effect.useSpan(
-          'Completions.create',
-          { captureStackTrace: false },
-          (span) =>
-            options.generate({
-              system: Option.none(), // could use Effect.serviceOption(AiInput.SystemInstruction)
-              input: Chunk.empty(),
-              // tools: [],
-              required: false,
-              span,
-            }),
-        ),
-    }),
-  )
+  ) => Effect.Effect<string, AIError>
+}): Context.Context<CompletionModel> => {
+  return Context.make(CompletionModel, {
+    generate: (input) =>
+      Effect.useSpan(
+        'Completions.create',
+        { captureStackTrace: false },
+        (span) =>
+          options.generate({
+            system: Option.none(), // could use Effect.serviceOption(AiInput.SystemInstruction)
+            input: Chunk.of(input),
+            // tools: [],
+            required: false,
+            span,
+          }),
+      ),
+  })
 }

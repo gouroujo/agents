@@ -5,7 +5,10 @@ export class OllamaGenerateResponse extends S.Class<OllamaGenerateResponse>(
 )({
   model: S.String,
   created_at: S.DateFromString,
-  response: S.String,
+  message: S.Struct({
+    role: S.Literal('assistant'),
+    content: S.String,
+  }),
   done: S.Boolean,
 }) {}
 
